@@ -43,6 +43,32 @@ def get_events_list(action, get_all=False):
 
 	return events
 
+def get_syscalls_list(action, get_all=False):
+	events = ''
+
+	cpu_percent = \
+		'module_load,module_free,module_get,module_put,module_request,power_cpu_idle,power_cpu_frequency,power_machine_suspend,rcu_utilization,sched_kthread_stop,sched_waking,sched_wakeup,sched_wakeup_new,sched_switch,sched_migrate_task,sched_process_free,sched_process_exit,sched_wait_task,sched_process_wait,sched_process_fork,sched_process_exec,sched_stat_wait,sched_stat_sleep,sched_stat_iowait,sched_stat_blocked,sched_stat_runtime,'
+	memory_shared = \
+		'kmem_kmalloc,kmem_cache_alloc,kmem_kmalloc_node,kmem_cache_alloc_node,kmem_kfree,kmem_cache_free,kmem_mm_page_free,kmem_mm_page_free_batched,kmem_mm_page_alloc,kmem_mm_page_alloc_zone_locked,kmem_mm_page_pcpu_drain,kmem_mm_page_alloc_extfrag,mm_vmscan_kswapd_sleep,mm_vmscan_kswapd_wake,mm_vmscan_wakeup_kswapd,mm_vmscan_direct_reclaim_begin,mm_vmscan_memcg_reclaim_begin,mm_vmscan_memcg_softlimit_reclaim_begin,mm_vmscan_direct_reclaim_end,mm_vmscan_memcg_reclaim_end,mm_vmscan_memcg_softlimit_reclaim_end,mm_vmscan_shrink_slab_start,mm_vmscan_shrink_slab_end,mm_vmscan_lru_isolate,mm_vmscan_writepage,mm_vmscan_lru_shrink_inactive,kvm_userspace_exit,kvm_set_irq,kvm_ioapic_set_irq,kvm_msi_set_irq,kvm_ack_irq,kvm_mmio,kvm_fpu,kvm_age_page,kvm_try_async_get_page,kvm_async_pf_doublefault,kvm_async_pf_not_present,kvm_async_pf_ready,kvm_async_pf_completed,'
+	disk_usage_percent = \
+		'writeback_dirty_page,writeback_write_inode_start,writeback_exec,writeback_wait,writeback_congestion_wait,writeback_thread_start,writeback_thread_stop,'
+
+	if get_all:
+		events = cpu_percent + memory_shared + disk_usage_percent
+	else:
+		for x in action:
+			if x == 1:  # cpu_percent
+				events = events + cpu_percent
+			if x == 2:  # memory_shared
+				events = events + memory_shared
+			if x == 3:  # disk_usage_percent
+				events = events + disk_usage_percent
+
+	if events != '':
+		events = events[:-1]
+
+	return events
+
 def bin_data(
 	metric_data,
 	window,
@@ -161,6 +187,7 @@ def decision_start(anomalyCounter,no_of_metrics,reclibrate_hits,reclibrate_pct,r
 	#anomaly_score = [0] * no_of_metrics
 	#anomaly_percent_array_current = [0] * no_of_metrics
 
+
 	anomaly_list_array = []
 
 	for i in range(no_of_metrics):
@@ -205,7 +232,12 @@ def decision_start(anomalyCounter,no_of_metrics,reclibrate_hits,reclibrate_pct,r
 	'''
 	print('---------------')
 
-	return get_events_list(anomaly_list_array)
+	events_list = get_events_list(anomaly_list_array)
+	syscalls_list = get_syscalls_list(anomaly_list_array)
+
+	both_list = [events_list, syscalls_list]
+
+	return both_list
 
 def prepare(dataset_tuple, sample_size=100):
 	binned_dataset = []
@@ -307,12 +339,15 @@ while i < 100:
 
 	all_events_list = get_events_list(None, True)
 
+	#all_syscalls_list = get_syscalls_list(None, True)
+	#os.system('lttng disable-event -k --syscall ' + all_syscalls_list)
+
 	os.system('lttng disable-event -k ' + all_events_list)
 
 	
 	reclibrate_hits = 5
 	reclibrate_pct = 0.03
-	events_list = decision_start(anomalyCounter,
+	both_list = decision_start(anomalyCounter,
 								 no_of_metrics,
 								 reclibrate_hits,
 								 reclibrate_pct,
@@ -321,7 +356,9 @@ while i < 100:
 								 anomaly_score_threshold,
 								 decreasing_factor
 								 )
-
+	events_list = both_list[0]
+	syscalls_list = both_list[1]
+	#os.system('lttng enable-event -k --syscall ' + syscalls_list)
 	os.system('lttng enable-event -k ' + events_list)
 	os.system('lttng rotate')
 
