@@ -17,6 +17,8 @@ ceiling_hits = []
 floor = []
 floor_hits = []
 
+
+
 def get_events_list(action, get_all=False):
 	events = ''
 
@@ -322,6 +324,10 @@ while i < 100:
 		ceiling_hits = [0] * no_of_metrics
 		floor_hits = [0] * no_of_metrics
 
+	f = open("cfdata.txt", "a")
+	f.write(str(ceiling)[1:-1] + ",|," + str(floor)[1:-1] + ",|,")
+	f.close()
+
 	binned_dataset = prepare(dataset_tuple, sample_size)
 
 	
@@ -338,6 +344,11 @@ while i < 100:
 	decreasing_factor = 0.7
 
 	all_events_list = get_events_list(None, True)
+
+	f = open("cfdata.txt", "a")
+	f.write(str(ceiling_hits)[1:-1] + ",|," + str(floor_hits)[1:-1])
+	f.write("\n")
+	f.close()
 
 	#all_syscalls_list = get_syscalls_list(None, True)
 	#os.system('lttng disable-event -k --syscall ' + all_syscalls_list)
