@@ -17,8 +17,6 @@ ceiling_hits = []
 floor = []
 floor_hits = []
 
-
-
 def get_events_list(action, get_all=False):
 	events = ''
 
@@ -218,7 +216,6 @@ def decision_start(anomalyCounter,no_of_metrics,reclibrate_hits,reclibrate_pct,r
 		f.write("...\n")
 		f.close()
 
-	
 
 	'''
 		if currentPct >= anomaly_percent_threshold:
@@ -251,12 +248,10 @@ def prepare(dataset_tuple, sample_size=100):
 
 # end of func
 
-os.system('lttng create test --output=/home/uvm1/Desktop/research/NewTestTraces/tracing'
-		  )
+os.system('lttng create test --output=/home/uvm1/Desktop/research/NewTestTraces/tracing')
 os.system('lttng enable-event -k --syscall --all')
 os.system('lttng add-context --kernel --type=tid')
-os.system('lttng enable-event -k irq_softirq_entry,irq_softirq_raise,irq_softirq_exit,irq_handler_entry,irq_handler_exit,lttng_statedump_process_state,lttng_statedump_start,lttng_statedump_end,lttng_statedump_network_interface,lttng_statedump_block_device,block_rq_complete,block_rq_insert,block_rq_issue,block_bio_frontmerge,sched_migrate,sched_migrate_task,power_cpu_frequency,net_dev_queue,netif_receive_skb,net_if_receive_skb,timer_hrtimer_start,timer_hrtimer_cancel,timer_hrtimer_expire_entry,timer_hrtimer_expire_exit'
-		  )
+os.system('lttng enable-event -k irq_softirq_entry,irq_softirq_raise,irq_softirq_exit,irq_handler_entry,irq_handler_exit,lttng_statedump_process_state,lttng_statedump_start,lttng_statedump_end,lttng_statedump_network_interface,lttng_statedump_block_device,block_rq_complete,block_rq_insert,block_rq_issue,block_bio_frontmerge,sched_migrate,sched_migrate_task,power_cpu_frequency,net_dev_queue,netif_receive_skb,net_if_receive_skb,timer_hrtimer_start,timer_hrtimer_cancel,timer_hrtimer_expire_entry,timer_hrtimer_expire_exit')
 os.system('lttng start')
 
 
@@ -264,8 +259,13 @@ os.system('lttng start')
 reset_calibration_step = 3
 
 i = 0
+
+last_ceiling_hits = []
+last_floor_hits = []
+
 while i < 100:
 	i += 1
+
 
 	f = open("flagged.txt", "a")
 	f.write("-------------New rotate("+str(i)+")------------\n")
@@ -276,7 +276,7 @@ while i < 100:
 		reset_calibration = True
 
 
-	df = read_csv('dump.csv').iloc[:100 * i]
+	df = read_csv('dump.csv').iloc[:500 * i]
 
 	cpu_percent = df['cpu_percent']
 
@@ -313,7 +313,7 @@ while i < 100:
 
 	# dataset_ram1 = np.array(memory_active[::-1])
 
-	sample_size = 50
+	sample_size = 20
 
 	dataset_tuple = (dataset_cpu1, dataset_ram1, dataset_hdd1)
 	no_of_metrics = len(dataset_tuple)
@@ -323,6 +323,8 @@ while i < 100:
 		floor = [0] * no_of_metrics
 		ceiling_hits = [0] * no_of_metrics
 		floor_hits = [0] * no_of_metrics
+		last_ceiling_hits = [0] * no_of_metrics
+		last_floor_hits = [0] * no_of_metrics
 
 	f = open("cfdata.txt", "a")
 	f.write(str(ceiling)[1:-1] + ",|," + str(floor)[1:-1] + ",|,")
@@ -330,14 +332,11 @@ while i < 100:
 
 	binned_dataset = prepare(dataset_tuple, sample_size)
 
-	
-
 	binMaxCulprits = get_bin_max_and_culprits(binned_dataset)
 
 	print('--------------')
 
-	anomalyCounter = get_anomaly_counter(binMaxCulprits, 3,
-			no_of_metrics)
+	anomalyCounter = get_anomaly_counter(binMaxCulprits, 3, no_of_metrics)
 
 	anomaly_percent_threshold = 0.7
 	anomaly_score_threshold = 0.3
@@ -346,7 +345,29 @@ while i < 100:
 	all_events_list = get_events_list(None, True)
 
 	f = open("cfdata.txt", "a")
-	f.write(str(ceiling_hits)[1:-1] + ",|," + str(floor_hits)[1:-1])
+
+	ceiling_hits_string = ""
+	floor_hits_string = ""
+
+	counter = 0
+	while counter < no_of_metrics:
+		if ceiling_hits[counter] == last_ceiling_hits[counter]:
+			ceiling_hits_string = ceiling_hits_string + "0,"
+		else:
+			ceiling_hits_string = ceiling_hits_string + "1,"
+			last_ceiling_hits[counter] = ceiling_hits[counter]
+
+		if floor_hits[counter] == last_floor_hits[counter]:
+			floor_hits_string = floor_hits_string + "0,"
+		else:
+			floor_hits_string = floor_hits_string + "1,"
+			last_floor_hits[counter] = floor_hits[counter]
+		counter = counter + 1
+
+	ceiling_hits_string = ceiling_hits_string[1:]
+	floor_hits_string = floor_hits_string[1:]
+
+	f.write(ceiling_hits_string + ",|," + floor_hits_string)
 	f.write("\n")
 	f.close()
 
@@ -372,5 +393,4 @@ while i < 100:
 	#os.system('lttng enable-event -k --syscall ' + syscalls_list)
 	os.system('lttng enable-event -k ' + events_list)
 	os.system('lttng rotate')
-
 	time.sleep(4)
