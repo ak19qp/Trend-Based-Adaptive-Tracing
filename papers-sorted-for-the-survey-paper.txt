@@ -1,0 +1,121 @@
+Failure Prevention
+------------------
+004 - Software Aging and Rejuvenation | Linear Models | Tree-Based
+021 - Software Aging and Rejuvenation | Markov Models | Linear Models
+035 - Software Defect Prediction | Linear Models | Logistic Regression | 
+038 - Software Defect Prediction | Tree-Based | Bayesian Networks | Naive Bayes
+042 - Software Defect Prediction | SVM
+049 - Software Aging and Rejuvenation | Linear Models
+050 - Software Defect Prediction | Tree-Based | Bayesian Networks | SVM
+052 - Software Defect Prediction | Linear Models | 
+062 - Checkpointing | Markov Models
+076 - Software Defect Prediction | Others
+094 - Software Defect Prediction | Tree-Based | Naive Bayes
+095 - Checkpointing | Markov Models
+098 - Software Defect Prediction | Tree-Based | Logistic Regression | Naive Bayes
+102 - Software Defect Prediction | Linear Models | Others
+103 - Software Defect Prediction | Logistic Regression | 
+105 - Software Defect Prediction | Fault Injection | Clustering | Tree-based
+114 - Checkpointing | Markov Models
+115 - Software Defect Prediction | Bayesian Networks | 
+117 - Software Defect Prediction | Linear Models | 
+128 - Software Defect Prediction | Fault Injection | Clustering | Linear Models
+136 - Software Aging and Rejuvenation | Markov Models
+137 - Software Aging and Rejuvenation | Markov Models
+141 - Software Defect Prediction | Tree-Based | Bayesian Networks | Logistic Regression | Naive Bayes
+153 - Software Defect Prediction | Linear Models | Others
+
+Online Failure Prediction
+-------------------------
+023 - System Failure Prediction | Autoregressive Models
+031 - System Failure Prediction | Bayesian Networks
+033 - Hardware Failure Prediction | Others
+037 - Hardware Failure Prediction | Neural Networks
+044 - System Failure Prediction | SVM
+054 - Hardware Failure Prediction | Naive Bayes | Clustering
+061 - System Failure Prediction | Neural Networks
+077 - Hardware Failure Prediction | Tree-Based
+078 - Hardware Failure Prediction | Tree-Based | Neural Networks
+081 - System Failure Prediction | SVM | Others
+088 - Hardware Failure Prediction | Naive Bayes
+089 - Hardware Failure Prediction | Tree-Based | Neural Networks | SVM | Logistic Regression
+101 - Hardware Failure Prediction | Clustering
+104 - Hardware Failure Prediction | Tree-Based
+119 - System Failure Prediction | Bayesian Networks | Autoregressive Models
+123 - System Failure Prediction | Markov Models
+138 - Hardware Failure Prediction | Tree-Based
+143 - Hardware Failure Prediction | Others
+148 - Hardware Failure Prediction | Tree-Based
+149 - Hardware Failure Prediction | Neural Networks
+160 - System Failure Prediction | SVM | Neural Networks | Others
+161 - Hardware Failure Prediction | Markov Models
+164 - Hardware Failure Prediction | SVM | Markov Models
+165 - Hardware Failure Prediction | Neural Networks
+167 - Hardware Failure Prediction | Neural Networks | SVM
+
+Failure Detection
+-----------------
+007 - Anomaly Detection | Autoencoders
+008 - Internet Traffic Classification | Neural Networks
+011 - Anomaly Detection | Clustering | PCFG
+012 - Anomaly Detection | FSM
+018 - Anomaly Detection | Other Neural Networks
+026 - Anomaly Detection | PCFG
+029 - Anomaly Detection | Others
+031 - Anomaly Detection | Others
+041 - Anomaly Detection | Other Neural Networks
+043 - Internet Traffic Classification | Neural Networks
+045 - Anomaly Detection | Clustering | Other Neural Networks | FSM
+072 - Anomaly Detection | Clustering | PCA
+073 - Anomaly Detection | PCA
+086 - Anomaly Detection | Tree-Based | Others
+087 - Anomaly Detection | Others
+092 - Anomaly Detection | Other Neural Networks
+097 - Internet Traffic Classification | Neural Networks
+110 - Anomaly Detection | Markov Models
+127 - Anomaly Detection | Clustering | Markov Models | Others
+131 - Anomaly Detection | Autoencoders
+142 - Internet Traffic Classification | Neural Networks
+150 - Anomaly Detection | Autoencoders
+151 - Anomaly Detection | PCA | Tree-Based
+159 - Anomaly Detection | Autoencoders
+162 - Anomaly Detection | Other Neural Networks
+163 - Log Enhancement | Others
+168 - Log Enhancement | Tree-based
+
+Root-cause Analysis
+-------------------
+001 - Fault Localization | Others
+003 - RCA - Others | Others
+006 - Root-cause Diagnosis | Pattern Matching
+009 - Fault Localization | Graph Mining
+014 - RCA - Others | Logistic Regression | Others
+025 - Root-cause Diagnosis | Others
+026 - Root-cause Diagnosis | Others
+030 - Fault Localization | Graph Mining | Search
+031 - Root-causeDiagnosis | Bayesian Networks
+032 - RCA - Others | Clustering | Others
+064 - Root-cause Diagnosis | Bayesian Networks | Others
+072 - Fault Localization | Others
+080 - Fault Localization | Search
+083 - Fault Localization | Others
+084 - RCA - Others | Clustering
+085 - Fault Localization | Others
+110 - Fault Localization | Others
+120 - RCA - Others | Clustering | Logistic Regression
+121 - Fault Localization | Others
+124 - Root-cause Diagnosis | Others
+127 - Root-cause Diagnosis | Pattern Matching
+132 - Fault Localization | Search
+145 - Fault Localization | Others
+154 - Root-cause Diagnosis | Others
+156 - Fault Localization | Graph Mining
+
+Remediation
+-----------
+082 - Solution Recommendation | Text Analysis
+124 - Recovery | Markov Models
+126 - Incident Triage | Markov Models
+140 - Solution Recommendation | Text Analysis | Similarity-based
+158 - Incident Triage | Bayesian Decision Theory
+166 - Solution Recommendation | Text Analysis
