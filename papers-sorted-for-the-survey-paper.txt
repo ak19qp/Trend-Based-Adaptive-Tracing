@@ -2,23 +2,23 @@ Failure Prevention
 ------------------
 004 - Software Aging and Rejuvenation | Linear Models | Tree-Based
 021 - Software Aging and Rejuvenation | Markov Models | Linear Models
-035 - Software Defect Prediction | Linear Models | Logistic Regression | 
+035 - Software Defect Prediction | Linear Models | Logistic Regression
 038 - Software Defect Prediction | Tree-Based | Bayesian Networks | Naive Bayes
 042 - Software Defect Prediction | SVM
 049 - Software Aging and Rejuvenation | Linear Models
 050 - Software Defect Prediction | Tree-Based | Bayesian Networks | SVM
-052 - Software Defect Prediction | Linear Models | 
+052 - Software Defect Prediction | Linear Models
 062 - Checkpointing | Markov Models
 076 - Software Defect Prediction | Others
 094 - Software Defect Prediction | Tree-Based | Naive Bayes
 095 - Checkpointing | Markov Models
 098 - Software Defect Prediction | Tree-Based | Logistic Regression | Naive Bayes
 102 - Software Defect Prediction | Linear Models | Others
-103 - Software Defect Prediction | Logistic Regression | 
+103 - Software Defect Prediction | Logistic Regression
 105 - Software Defect Prediction | Fault Injection | Clustering | Tree-based
 114 - Checkpointing | Markov Models
-115 - Software Defect Prediction | Bayesian Networks | 
-117 - Software Defect Prediction | Linear Models | 
+115 - Software Defect Prediction | Bayesian Networks
+117 - Software Defect Prediction | Linear Models
 128 - Software Defect Prediction | Fault Injection | Clustering | Linear Models
 136 - Software Aging and Rejuvenation | Markov Models
 137 - Software Aging and Rejuvenation | Markov Models
