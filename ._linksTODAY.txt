@@ -7,3 +7,5 @@ https://www.researchgate.net/publication/269225861_Correlation_analysis_of_perfo
 https://www.mcs.anl.gov/papers/P7036-0417.pdf
 
 https://www.kdnuggets.com/2020/04/performance-evaluation-metrics-classification.html
+
+https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.325.2689&rep=rep1&type=pdf
