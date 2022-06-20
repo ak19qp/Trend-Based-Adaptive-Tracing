@@ -269,11 +269,11 @@ def is_corr_broken(corr_mat): # pass last values of the dataframe here
 	global last_corr_reading
 	global corr_hit_counter
 
-	
+
 	flagged_index = []
 	corr_broken = False
 	count = -1
-	for item in corr_mat:
+	for item in corr_mat.unstack():
 		count = count + 1
 		if abs(float(item)) > abs(last_corr_reading[count]) + abs(last_corr_std[count]) or abs(float(item)) < abs(last_corr_reading[count]) - abs(last_corr_std[count]):
 			flagged_index.append(count)
@@ -430,7 +430,7 @@ while i < 100:
 	ceiling_hits_string = ""
 	floor_hits_string = ""
 	arima_action_taken_string = ""
-	corr_action_string = "0,0,0"
+	corr_action_string = ""
 
 	counter = 0
 	while counter < no_of_metrics:
@@ -459,24 +459,27 @@ while i < 100:
 		counter = counter + 1
 
 
+	corr_act_str_arr = [0] * no_of_metrics
+
+	if len(broken_corr_mat)>0:
+		for item in broken_corr_mat:
+			if item < 3:
+				corr_act_str_arr[0] = 1
+			elif item <6:
+				corr_act_str_arr[1] = 1
+			else:
+				corr_act_str_arr[2] = 1
+
+	for item in corr_act_str_arr:
+		corr_action_string = corr_action_string + str(item) + ","
+
+
 
 
 	ceiling_hits_string = ceiling_hits_string[:-1]
 	floor_hits_string = floor_hits_string[:-1]
 	arima_action_taken_string = arima_action_taken_string[:-1]
-
-
-
-	if len(broken_corr_mat)>0:
-		for item in broken_corr_mat:
-			if item < 3:
-				corr_action_string[0] = "1"
-			elif item <6:
-				corr_action_string[2] = "1"
-			else:
-				corr_action_string[4] = "1"
-
-		
+	corr_action_string = corr_action_string[:-1]
 			
 	
 
