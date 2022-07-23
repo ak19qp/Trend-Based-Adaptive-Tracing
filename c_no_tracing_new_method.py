@@ -23,6 +23,7 @@ last_corr_std = []
 corr_hit_counter = 0
 
 def get_events_list(action, get_all=False):
+	return 0
 	events = ''
 
 	cpu_percent = \
@@ -49,6 +50,7 @@ def get_events_list(action, get_all=False):
 	return events
 
 def get_syscalls_list(action, get_all=False):
+	return 0
 	events = ''
 
 	cpu_percent = \
