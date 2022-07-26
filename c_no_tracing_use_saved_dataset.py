@@ -137,9 +137,9 @@ corr_saved_counter = 0
 
 df = read_csv('anomaly.csv')
 
-sample_size = 50
-start_at = 0
-loop = 300
+sample_size = 100
+start_at = 9000
+loop = 12000
 
 while i < loop:
 	
@@ -155,7 +155,7 @@ while i < loop:
 	
 	arima_action_taken = []
 	
-	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 4: 29] # 1 is used because 0 has the anomaly labeling
+	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 26] # 1 is used because 0 has the anomaly labeling
 
 	sample_dataset.reset_index(drop=True, inplace=True)
 
