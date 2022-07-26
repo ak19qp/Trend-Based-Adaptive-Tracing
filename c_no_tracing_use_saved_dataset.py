@@ -28,8 +28,7 @@ from random import randrange
 import statistics
 import statsmodels.api as sm
 
-def arima(metric_dataset,metric_id):
-	# split into train and test sets
+def arima(metric_dataset, metric_id, use_sd_or_mean = "mean"):
 
 	errorUpperBound = 0.03
 	errorLowerBound = 0.03
@@ -42,11 +41,11 @@ def arima(metric_dataset,metric_id):
 	output.reset_index(drop=True, inplace=True)
 	arima_prediction = output[0]
 	obs = metric_dataset[len(metric_dataset)-1]
-
+	
 	meanOfSample = statistics.mean(metric_dataset[0:-2])
 	sdOfSample = statistics.stdev(metric_dataset[0:-2])
 	meanAndPredictionDifferencePercentage = abs(arima_prediction - meanOfSample) / meanOfSample
-
+	
 	isAnomaly = 0
 
 	if arima_prediction > (meanOfSample + (errorUpperBound * meanOfSample)) or arima_prediction < (meanOfSample - (errorLowerBound * meanOfSample)):
@@ -59,9 +58,11 @@ def arima(metric_dataset,metric_id):
 		ARIMAtakeAction = 1
 	
 
-	#samplingFrequency =  1 - anomalyScore 
+	#samplingFrequency =  1 - anomalyScore
 
-	saveStr = str(arima_prediction) + "," + str(obs) + "," + str(meanOfSample) + "," + str(meanAndPredictionDifferencePercentage) + "," + str(isAnomaly) + "," + str(anomalyScore) + "," + str(samplingFrequency) + "," + str(ARIMAtakeAction) + ","
+
+	saveStr = str(arima_prediction) + "," + str(obs) + "," + str(meanOfSample) + "," + str(meanAndPredictionDifferencePercentage) + "," + str(isAnomaly) + "," + str(anomalyScore[metric_id]) + "," + str(samplingFrequency) + "," + str(ARIMAtakeAction) + ","
+	print(saveStr)
 	f = open("results_"+str(metric_id)+".csv", "a")
 	f.write(saveStr)
 	f.close()
@@ -123,17 +124,18 @@ corr_saved_counter = 0
 
 df = read_csv('anomaly.csv')
 
-while i < 100:
+sample_size = 50
+start_at = 100
+
+while i < 10:
 	i += 1
 	arima_action_taken = []
-	sample_size = 50
-	start_at = 100
+	
+	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 4]
 
-	df = df.iloc[start_at+i : start_at+i+sample_size, 1: 4]
+	sample_dataset.reset_index(drop=True, inplace=True)
 
-	df.reset_index(drop=True, inplace=True)
-
-	no_of_metrics = len(df.columns)
+	no_of_metrics = len(sample_dataset.columns)
 	arima_action_taken = [0] * no_of_metrics
 
 
@@ -150,13 +152,13 @@ while i < 100:
 
 	z = 0
 	while z < no_of_metrics:
-		arima_action_taken[z] = arima(df.iloc[:,z], z)
+		arima_action_taken[z] = arima(sample_dataset.iloc[:,z], z)
 		z = z + 1
 
 
 
 	#saving correlations
-	correlation_mat = df.corr()
+	correlation_mat = sample_dataset.corr()
 	save_correlation(correlation_mat)
 	corr_saved_counter = corr_saved_counter + 1
 
@@ -197,4 +199,5 @@ while i < 100:
 			f = open("results_"+str(z)+".csv", "a")
 			f.write("0\n")
 			f.close()
+		z = z + 1
 
