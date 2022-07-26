@@ -137,16 +137,19 @@ corr_saved_counter = 0
 
 df = read_csv('anomaly.csv')
 
-sample_size = 100
+sample_size = 50
 start_at = 0
+loop = 300
 
-while i < 300:
+while i < loop:
 	i += 1
+	pct_progress = (i/loop) * 100
+	pct_progress = round(pct_progress, 2)
 
-	print(str(i)+"\n")
+	print("Progress: "str(pct_progress)+"%\n")
 	arima_action_taken = []
 	
-	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 4]
+	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 26] # 1 is used because 0 has the anomaly labeling
 
 	sample_dataset.reset_index(drop=True, inplace=True)
 
@@ -166,7 +169,7 @@ while i < 300:
 			f = open("corr_data.csv", "w")
 			f.write("")
 			f.close()
-			
+
 			z = z + 1
 
 
@@ -202,8 +205,6 @@ while i < 300:
 		for item in broken_corr_mat:
 			flagidx = int(int(item) / int(no_of_metrics))
 			corr_action_arr[flagidx] = 1
-
-	print(corr_action_arr)
 
 
 	z = 0
