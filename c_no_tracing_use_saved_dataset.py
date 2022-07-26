@@ -162,6 +162,11 @@ while i < 300:
 			write_str = "predicted,actual,mean_of_sample,sd_of_sample,meanAndPredictionDifferencePercentage,betaVal,ARIMAflagged,anomalyScore,sampling_Freq,ARIMAtakeAction,CorrelationBroken,ActionTaken(Both)\n"
 			f.write(write_str)
 			f.close()
+
+			f = open("corr_data.csv", "w")
+			f.write("")
+			f.close()
+			
 			z = z + 1
 
 
@@ -195,13 +200,8 @@ while i < 300:
 
 	if len(broken_corr_mat)>0:
 		for item in broken_corr_mat:
-			print("\nitem:"+str(item)+"\n")
-			if item < 3:
-				corr_action_arr[0] = 1
-			elif item <6:
-				corr_action_arr[1] = 1
-			else:
-				corr_action_arr[2] = 1
+			flagidx = int(int(item) / int(no_of_metrics))
+			corr_action_arr[flagidx] = 1
 
 	print(corr_action_arr)
 
