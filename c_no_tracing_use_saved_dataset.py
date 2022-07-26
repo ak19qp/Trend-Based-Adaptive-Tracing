@@ -57,8 +57,6 @@ def arima(metric_dataset,metric_id):
 	ARIMAtakeAction = 0
 	if anomalyScore[metric_id] >= anomalyScoreThreshold:
 		ARIMAtakeAction = 1
-
-	print(type(ARIMAtakeAction))
 	
 
 	#samplingFrequency =  1 - anomalyScore 
@@ -123,14 +121,15 @@ i = 0
 
 corr_saved_counter = 0
 
+df = read_csv('anomaly.csv')
+
 while i < 100:
 	i += 1
 	arima_action_taken = []
-	sample_size = 30
+	sample_size = 50
 	start_at = 100
 
-
-	df = read_csv('anomaly.csv').iloc[start_at+i : start_at+i+sample_size, 77: 81]
+	df = df.iloc[start_at+i : start_at+i+sample_size, 1: 4]
 
 	df.reset_index(drop=True, inplace=True)
 
