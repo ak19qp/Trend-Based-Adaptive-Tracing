@@ -98,7 +98,7 @@ def is_corr_broken(corr_mat): # pass last values of the dataframe here
 	global last_corr_reading
 	global corr_hit_counter
 
-	print("last_std:"+str(last_corr_std)+" last reading:"+str(last_corr_reading)+" corr_hit_counter:"+str(corr_hit_counter))
+	#print("last_std:"+str(last_corr_std)+" last reading:"+str(last_corr_reading)+" corr_hit_counter:"+str(corr_hit_counter))
 
 
 	flagged_index = []
