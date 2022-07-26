@@ -12,6 +12,9 @@ import time
 import os
 import matplotlib.pyplot as plt
 
+import warnings
+warnings.filterwarnings("ignore")
+
 
 last_corr_reading = []
 last_corr_std = []
@@ -34,7 +37,7 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 	errorLowerBound = 0.03
 	betaVal = 0.5
 	samplingFrequency = 1.0
-	anomalyScoreThreshold = 0.5
+	anomalyScoreThreshold = 0.3
 	model = sm.tsa.ARIMA(metric_dataset[0:-1], order=(1,1,1))
 	model_fit = model.fit()
 	output = model_fit.forecast()
@@ -58,7 +61,7 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 			isAnomaly = 1
 
 
-	anomalyScore[metric_id] = (betaVal * isAnomaly) + ((1 - betaVal) * anomalyScore[metric_id])
+	anomalyScore[metric_id] = (betaVal * isAnomaly) + (abs(1 - betaVal) * anomalyScore[metric_id])
 
 	ARIMAtakeAction = 0
 	if anomalyScore[metric_id] >= anomalyScoreThreshold:
@@ -69,7 +72,7 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 
 
 	saveStr = str(arima_prediction) + "," + str(obs) + "," + str(meanOfSample) + "," + str(sdOfSample) + "," + str(meanAndPredictionDifferencePercentage) + "," + str(betaVal) + "," + str(isAnomaly) + "," + str(anomalyScore[metric_id]) + "," + str(samplingFrequency) + "," + str(ARIMAtakeAction) + ","
-	print(saveStr)
+	#print(saveStr)
 	f = open("results_of_metric-"+str(metric_id)+".csv", "a")
 	f.write(saveStr)
 	f.close()
@@ -95,6 +98,8 @@ def is_corr_broken(corr_mat): # pass last values of the dataframe here
 	global last_corr_reading
 	global corr_hit_counter
 
+	print("last_std:"+str(last_corr_std)+" last reading:"+str(last_corr_reading)+" corr_hit_counter:"+str(corr_hit_counter))
+
 
 	flagged_index = []
 	corr_broken = False
@@ -114,16 +119,17 @@ def reset_correlation(corr_mat_dataset):
 	global last_corr_std
 	global last_corr_reading
 	global corr_hit_counter
+	corr_mat_dataset.reset_index(drop=True, inplace=True)
 
 	corr_hit_counter = 0
 
 	last_corr_std = corr_mat_dataset.std(skipna = True).to_numpy()
-	last_corr_reading = corr_mat_dataset.iloc[-1:].to_numpy()[0]
+	last_corr_reading = corr_mat_dataset.iloc[-1:,:].to_numpy()[0]
 
 
 
 
-reset_calibration_step = 3
+reset_calibration_step = 100
 
 i = 0
 
@@ -131,11 +137,13 @@ corr_saved_counter = 0
 
 df = read_csv('anomaly.csv')
 
-sample_size = 50
-start_at = 100
+sample_size = 100
+start_at = 0
 
-while i < 10:
+while i < 300:
 	i += 1
+
+	print(str(i)+"\n")
 	arima_action_taken = []
 	
 	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 4]
@@ -172,13 +180,13 @@ while i < 10:
 
 	#setting up the global variables for storing last corr and the last std.
 	if corr_saved_counter == sample_size or corr_hit_counter >= reset_calibration_step:
-		corr_mat_dataset = read_csv('corr_data.csv').iloc[-sample_size:]
+		corr_mat_dataset = read_csv('corr_data.csv').iloc[-sample_size:,:]
 		reset_correlation(corr_mat_dataset)
 
 
 	broken_corr_mat=[]
 	if i>= sample_size*2:
-		last_corr_mat = read_csv('corr_data.csv').iloc[-1:]
+		last_corr_mat = read_csv('corr_data.csv').iloc[-1:,:]
 		broken_corr_mat = is_corr_broken(last_corr_mat)
 
 
@@ -187,6 +195,7 @@ while i < 10:
 
 	if len(broken_corr_mat)>0:
 		for item in broken_corr_mat:
+			print("\nitem:"+str(item)+"\n")
 			if item < 3:
 				corr_action_arr[0] = 1
 			elif item <6:
@@ -194,6 +203,7 @@ while i < 10:
 			else:
 				corr_action_arr[2] = 1
 
+	print(corr_action_arr)
 
 
 	z = 0
