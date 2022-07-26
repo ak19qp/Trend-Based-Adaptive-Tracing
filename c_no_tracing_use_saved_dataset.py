@@ -135,18 +135,24 @@ i = 0
 
 corr_saved_counter = 0
 
-df = read_csv('part-199.csv')
+df = read_csv('anomaly.csv')
 
 sample_size = 50
 start_at = 0
 loop = 300
 
 while i < loop:
+	
 	i += 1
 	pct_progress = (i/loop) * 100
 	pct_progress = round(pct_progress, 2)
-
 	print("Progress: "+str(pct_progress)+"%\n")
+
+	arima_act_taken_for_save = 0
+	corr_act_taken_for_save = 0
+
+	isActualAnomaly = df.iloc[start_at+i+sample_size-1, 0]
+	
 	arima_action_taken = []
 	
 	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 4: 29] # 1 is used because 0 has the anomaly labeling
@@ -170,12 +176,18 @@ while i < loop:
 			f.write("")
 			f.close()
 
+			f = open("result_summary.csv", "w")
+			f.write("actual_is_anomally,arima_flag,correlation_flag,both_flag\n")
+			f.close()
+
 			z = z + 1
 
 
 	z = 0
 	while z < no_of_metrics:
 		arima_action_taken[z] = arima(sample_dataset.iloc[:,z], z)
+		if arima_action_taken[z] == 1:
+			arima_act_taken_for_save = 1
 		z = z + 1
 
 
@@ -202,9 +214,23 @@ while i < loop:
 	corr_action_arr = [0] * no_of_metrics
 
 	if len(broken_corr_mat)>0:
+		corr_act_taken_for_save = 1
 		for item in broken_corr_mat:
 			flagidx = int(int(item) / int(no_of_metrics))
 			corr_action_arr[flagidx] = 1
+
+
+	f = open("result_summary.csv", "a")
+	if isActualAnomaly:
+		f.write("1,"+str(arima_act_taken_for_save)+","+str(corr_act_taken_for_save)+",")
+	else:
+		f.write("0,"+str(arima_act_taken_for_save)+","+str(corr_act_taken_for_save)+",")
+
+	if arima_act_taken_for_save == 1 and corr_act_taken_for_save == 1:
+		f.write("1\n")
+	else:
+		f.write("0\n")
+	f.close()
 
 
 	z = 0
