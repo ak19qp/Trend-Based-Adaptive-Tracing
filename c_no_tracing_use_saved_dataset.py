@@ -28,28 +28,35 @@ from random import randrange
 import statistics
 import statsmodels.api as sm
 
-def arima(metric_dataset, metric_id, use_sd_or_mean = "mean"):
+def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 
 	errorUpperBound = 0.03
 	errorLowerBound = 0.03
 	betaVal = 0.5
 	samplingFrequency = 1.0
-	anomalyScoreThreshold = 0.7
+	anomalyScoreThreshold = 0.5
 	model = sm.tsa.ARIMA(metric_dataset[0:-1], order=(1,1,1))
 	model_fit = model.fit()
 	output = model_fit.forecast()
 	output.reset_index(drop=True, inplace=True)
 	arima_prediction = output[0]
 	obs = metric_dataset[len(metric_dataset)-1]
-	
+
 	meanOfSample = statistics.mean(metric_dataset[0:-2])
 	sdOfSample = statistics.stdev(metric_dataset[0:-2])
 	meanAndPredictionDifferencePercentage = abs(arima_prediction - meanOfSample) / meanOfSample
-	
-	isAnomaly = 0
 
-	if arima_prediction > (meanOfSample + (errorUpperBound * meanOfSample)) or arima_prediction < (meanOfSample - (errorLowerBound * meanOfSample)):
-		isAnomaly = 1
+	betaVal = abs(abs(arima_prediction)-abs(meanOfSample)) / abs(meanOfSample)
+
+	isAnomaly = 0
+	if use_sd_or_mean == "mean":
+		if arima_prediction > (meanOfSample + (errorUpperBound * meanOfSample)) or arima_prediction < (meanOfSample - (errorLowerBound * meanOfSample)):
+			isAnomaly = 1
+	
+	if use_sd_or_mean == "sd":
+		if arima_prediction > (meanOfSample + sdOfSample) or arima_prediction < (meanOfSample - sdOfSample):
+			isAnomaly = 1
+
 
 	anomalyScore[metric_id] = (betaVal * isAnomaly) + ((1 - betaVal) * anomalyScore[metric_id])
 
@@ -61,9 +68,9 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "mean"):
 	#samplingFrequency =  1 - anomalyScore
 
 
-	saveStr = str(arima_prediction) + "," + str(obs) + "," + str(meanOfSample) + "," + str(meanAndPredictionDifferencePercentage) + "," + str(isAnomaly) + "," + str(anomalyScore[metric_id]) + "," + str(samplingFrequency) + "," + str(ARIMAtakeAction) + ","
+	saveStr = str(arima_prediction) + "," + str(obs) + "," + str(meanOfSample) + "," + str(sdOfSample) + "," + str(meanAndPredictionDifferencePercentage) + "," + str(betaVal) + "," + str(isAnomaly) + "," + str(anomalyScore[metric_id]) + "," + str(samplingFrequency) + "," + str(ARIMAtakeAction) + ","
 	print(saveStr)
-	f = open("results_"+str(metric_id)+".csv", "a")
+	f = open("results_of_metric-"+str(metric_id)+".csv", "a")
 	f.write(saveStr)
 	f.close()
 
@@ -143,8 +150,8 @@ while i < 10:
 		anomalyScore = [0] * no_of_metrics
 		z = 0
 		while z < no_of_metrics:
-			f = open("results_"+str(z)+".csv", "w")
-			write_str = "predicted,actual,mean_of_sample,meanAndPredictionDifferencePercentage,ARIMAflagged,anomalyScore,sampling_Freq,ARIMAtakeAction,CorrelationBroken\n"
+			f = open("results_of_metric-"+str(z)+".csv", "w")
+			write_str = "predicted,actual,mean_of_sample,sd_of_sample,meanAndPredictionDifferencePercentage,betaVal,ARIMAflagged,anomalyScore,sampling_Freq,ARIMAtakeAction,CorrelationBroken,ActionTaken(Both)\n"
 			f.write(write_str)
 			f.close()
 			z = z + 1
@@ -191,13 +198,18 @@ while i < 10:
 
 	z = 0
 	while z < no_of_metrics:
-		if arima_action_taken[z] == 1 and corr_action_arr[z] == 1:
-			f = open("results_"+str(z)+".csv", "a")
-			f.write("1\n")
-			f.close()
+		if corr_action_arr[z] == 1:
+			if arima_action_taken[z] == 1:
+				f = open("results_of_metric-"+str(z)+".csv", "a")
+				f.write("1,1\n")
+				f.close()
+			else:
+				f = open("results_of_metric-"+str(z)+".csv", "a")
+				f.write("1,0\n")
+				f.close()
 		else:
-			f = open("results_"+str(z)+".csv", "a")
-			f.write("0\n")
+			f = open("results_of_metric-"+str(z)+".csv", "a")
+			f.write("0,0\n")
 			f.close()
 		z = z + 1
 
