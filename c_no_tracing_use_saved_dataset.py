@@ -146,7 +146,7 @@ while i < loop:
 	pct_progress = (i/loop) * 100
 	pct_progress = round(pct_progress, 2)
 
-	print("Progress: "str(pct_progress)+"%\n")
+	print("Progress: "+str(pct_progress)+"%\n")
 	arima_action_taken = []
 	
 	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 26] # 1 is used because 0 has the anomaly labeling
