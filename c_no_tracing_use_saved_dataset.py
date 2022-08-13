@@ -139,7 +139,7 @@ i = 0
 
 corr_saved_counter = 0
 
-df = read_csv('20c_managebooks_no_wait_20c_data.csv')
+df = read_csv('20c_managebooks_5pct_rand_wait_20c_data.csv')
 
 #Normalizing Start
 x = df.values #returns a numpy array
@@ -189,7 +189,7 @@ while i < loop:
 			f.close()
 
 			f = open("result_summary.csv", "w")
-			f.write("actual_is_anomally,arima_flag,correlation_flag,both_flag\n")
+			f.write("actual_is_anomally,arima_flag,correlation_flag,both_flag,flagged_metrics\n")
 			f.close()
 
 			z = z + 1
@@ -239,27 +239,30 @@ while i < loop:
 		f.write("0,"+str(arima_act_taken_for_save)+","+str(corr_act_taken_for_save)+",")
 
 	if arima_act_taken_for_save == 1 and corr_act_taken_for_save == 1:
-		f.write("1\n")
+		f.write("1,")
 	else:
-		f.write("0\n")
-	f.close()
+		f.write("0,")
+	
 
-
+	flagged_metrics = ""
 	z = 0
 	while z < no_of_metrics:
 		if corr_action_arr[z] == 1:
 			if arima_action_taken[z] == 1:
-				f = open("results_of_metric-"+str(z)+".csv", "a")
-				f.write("1,1\n")
-				f.close()
+				fs = open("results_of_metric-"+str(z)+".csv", "a")
+				fs.write("1,1\n")
+				fs.close()
+				flagged_metrics = flagged_metrics + str(z) + "|"
 			else:
-				f = open("results_of_metric-"+str(z)+".csv", "a")
-				f.write("1,0\n")
-				f.close()
+				fs = open("results_of_metric-"+str(z)+".csv", "a")
+				fs.write("1,0\n")
+				fs.close()
 		else:
-			f = open("results_of_metric-"+str(z)+".csv", "a")
-			f.write("0,0\n")
-			f.close()
+			fs = open("results_of_metric-"+str(z)+".csv", "a")
+			fs.write("0,0\n")
+			fs.close()
 		z = z + 1
+	f.write(flagged_metrics+"\n")
+	f.close()
 
 print("Progress: Complete!\n")
