@@ -142,11 +142,11 @@ corr_saved_counter = 0
 df = read_csv('20c_managebooks_no_wait_20c_data.csv')
 
 #Normalizing Start
-#x = df.values #returns a numpy array
-#min_max_scaler = preprocessing.MinMaxScaler()
-#x_scaled = min_max_scaler.fit_transform(x)
-#df = pd.DataFrame(x_scaled)
-#df.to_csv('normalized.csv')
+x = df.values #returns a numpy array
+min_max_scaler = preprocessing.MinMaxScaler()
+x_scaled = min_max_scaler.fit_transform(x)
+df = pd.DataFrame(x_scaled)
+df.to_csv('normalized.csv')
 #Normalizing End
 
 sample_size = 24
