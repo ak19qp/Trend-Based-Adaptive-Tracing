@@ -11,6 +11,10 @@ import numpy as np
 import time
 import os
 import matplotlib.pyplot as plt
+import pandas as pd
+
+from sklearn import preprocessing
+
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -129,17 +133,25 @@ def reset_correlation(corr_mat_dataset):
 
 
 
-reset_calibration_step = 100
+reset_calibration_step = 24
 
 i = 0
 
 corr_saved_counter = 0
 
-df = read_csv('anomaly.csv')
+df = read_csv('20c_managebooks_no_wait_20c_data.csv')
 
-sample_size = 100
-start_at = 9000
-loop = 12000
+#Normalizing Start
+#x = df.values #returns a numpy array
+#min_max_scaler = preprocessing.MinMaxScaler()
+#x_scaled = min_max_scaler.fit_transform(x)
+#df = pd.DataFrame(x_scaled)
+#df.to_csv('normalized.csv')
+#Normalizing End
+
+sample_size = 24
+start_at = 0
+loop = 300
 
 while i < loop:
 	
@@ -155,7 +167,7 @@ while i < loop:
 	
 	arima_action_taken = []
 	
-	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size, 1: 26] # 1 is used because 0 has the anomaly labeling
+	sample_dataset = df.iloc[start_at+i : start_at+i+sample_size,] # 1 is used because 0 has the anomaly labeling
 
 	sample_dataset.reset_index(drop=True, inplace=True)
 
