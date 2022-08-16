@@ -46,6 +46,7 @@ def get_events_list(action=None, get_all=False):
 	disk_events = \
 		'writeback_dirty_page,writeback_write_inode_start,writeback_exec,writeback_wait,writeback_congestion_wait,writeback_thread_start,writeback_thread_stop,'
 
+	#network events not complete
 	network_events = \
 		'writeback_dirty_page,writeback_write_inode_start,writeback_exec,writeback_wait,writeback_congestion_wait,writeback_thread_start,writeback_thread_stop,'
 
