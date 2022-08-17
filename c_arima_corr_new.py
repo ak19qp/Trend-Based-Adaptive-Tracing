@@ -23,7 +23,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-
 last_corr_reading = []
 last_corr_std = []
 
@@ -31,9 +30,7 @@ corr_hit_counter = 0
 
 anomalyScore = []
 
-
 metrics_list = ["cpu_percent","cpu_user_time","cpu_system_time","cpu_idle_time","cpu_iowait","cpu_irq","cpu_softirq","cpu_numbers_of_ctx_switches","cpu_numbers_of_interrupts","cpu_numbers_of_soft_interrupts","cpu_load_runable_state","memory_percent","memory_active","memory_buffers","memory_cached","memory_shared","memory_swap_percent","memory_swap_sin","memory_swap_sout","disk_usage_percent","disk_read_count","disk_write_count","disk_read_time","disk_write_time","disk_busy_time","network_bytes_sent","network_bytes_recv","network_packets_sent","network_packets_recv","network_errin","network_errout","network_dropin","network_dropout"]
-
 
 
 def get_events_list(action=None, get_all=False):
@@ -45,10 +42,8 @@ def get_events_list(action=None, get_all=False):
 		'kmem_kmalloc,kmem_cache_alloc,kmem_kmalloc_node,kmem_cache_alloc_node,kmem_kfree,kmem_cache_free,kmem_mm_page_free,kmem_mm_page_free_batched,kmem_mm_page_alloc,kmem_mm_page_alloc_zone_locked,kmem_mm_page_pcpu_drain,kmem_mm_page_alloc_extfrag,mm_vmscan_kswapd_sleep,mm_vmscan_kswapd_wake,mm_vmscan_wakeup_kswapd,mm_vmscan_direct_reclaim_begin,mm_vmscan_memcg_reclaim_begin,mm_vmscan_memcg_softlimit_reclaim_begin,mm_vmscan_direct_reclaim_end,mm_vmscan_memcg_reclaim_end,mm_vmscan_memcg_softlimit_reclaim_end,mm_vmscan_shrink_slab_start,mm_vmscan_shrink_slab_end,mm_vmscan_lru_isolate,mm_vmscan_writepage,mm_vmscan_lru_shrink_inactive,kvm_userspace_exit,kvm_set_irq,kvm_ioapic_set_irq,kvm_msi_set_irq,kvm_ack_irq,kvm_mmio,kvm_fpu,kvm_age_page,kvm_try_async_get_page,kvm_async_pf_doublefault,kvm_async_pf_not_present,kvm_async_pf_ready,kvm_async_pf_completed,'
 	disk_events = \
 		'writeback_dirty_page,writeback_write_inode_start,writeback_exec,writeback_wait,writeback_congestion_wait,writeback_thread_start,writeback_thread_stop,'
-
-	#network events not complete
 	network_events = \
-		'writeback_dirty_page,writeback_write_inode_start,writeback_exec,writeback_wait,writeback_congestion_wait,writeback_thread_start,writeback_thread_stop,'
+		'net_dev_xmit,net_dev_queue,net_if_receive_skb,net_if_rx,net_napi_gro_frags_entry,net_napi_gro_receive_entry,net_if_receive_skb_entry,net_if_rx_entry,net_if_rx_ni_entry,net_if_receive_skb_list_entry,net_napi_gro_frags_exit,net_napi_gro_receive_exit,net_if_receive_skb_exit,net_if_rx_exit,net_if_rx_ni_exit,net_if_receive_skb_list_exit'
 
 	if get_all:
 		events = cpu_percent + memory_shared + disk_usage_percent
@@ -97,7 +92,6 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 		if arima_prediction > (meanOfSample + sdOfSample) or arima_prediction < (meanOfSample - sdOfSample):
 			isAnomaly = 1
 
-
 	anomalyScore[metric_id] = (betaVal * isAnomaly) + (abs(1 - betaVal) * anomalyScore[metric_id])
 
 	ARIMAtakeAction = 0
@@ -107,7 +101,6 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 
 	#samplingFrequency =  1 - anomalyScore
 
-
 	saveStr = str(arima_prediction) + "," + str(obs) + "," + str(meanOfSample) + "," + str(sdOfSample) + "," + str(meanAndPredictionDifferencePercentage) + "," + str(betaVal) + "," + str(isAnomaly) + "," + str(anomalyScore[metric_id]) + "," + str(samplingFrequency) + "," + str(ARIMAtakeAction) + ","
 	#print(saveStr)
 	f = open("results_of_metric-"+str(metric_id)+".csv", "a")
@@ -115,8 +108,6 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 	f.close()
 
 	return ARIMAtakeAction
-
-
 
 
 def save_correlation(corr_mat):
@@ -132,7 +123,6 @@ def save_correlation(corr_mat):
 	f.close()
 
 
-
 def is_corr_broken(corr_mat): # pass last values of the dataframe here
 
 	global last_corr_std
@@ -140,7 +130,6 @@ def is_corr_broken(corr_mat): # pass last values of the dataframe here
 	global corr_hit_counter
 
 	#print("last_std:"+str(last_corr_std)+" last reading:"+str(last_corr_reading)+" corr_hit_counter:"+str(corr_hit_counter))
-
 
 	flagged_index = []
 	corr_broken = False
@@ -157,7 +146,6 @@ def is_corr_broken(corr_mat): # pass last values of the dataframe here
 	return flagged_index
 
 
-
 def reset_correlation(corr_mat_dataset):
 	global last_corr_std
 	global last_corr_reading
@@ -168,8 +156,6 @@ def reset_correlation(corr_mat_dataset):
 
 	last_corr_std = corr_mat_dataset.std(skipna = True).to_numpy()
 	last_corr_reading = corr_mat_dataset.iloc[-1:,:].to_numpy()[0]
-
-
 
 
 def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibration_step):
@@ -186,17 +172,14 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 
 	metrics_list = df.columns.values.tolist()
 
-
 	while i < loop:
 		i += 1
 		pct_progress = (i/loop) * 100
 		pct_progress = round(pct_progress, 2)
 		print("Progress: "+str(pct_progress)+"%\n")
 
-
 		arima_act_taken_for_save = 0
 		corr_act_taken_for_save = 0
-
 
 		arima_action_taken = []
 
@@ -206,7 +189,6 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 
 		no_of_metrics = len(sample_dataset.columns)
 		arima_action_taken = [0] * no_of_metrics
-
 
 		if i == 1:
 			anomalyScore = [0] * no_of_metrics
@@ -227,7 +209,6 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 
 				z = z + 1
 
-
 		z = 0
 		while z < no_of_metrics:
 			arima_action_taken[z] = arima(sample_dataset.iloc[:,z], z)
@@ -235,26 +216,20 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 				arima_act_taken_for_save = 1
 			z = z + 1
 
-
-
 		#saving correlations
 		correlation_mat = sample_dataset.corr()
 		save_correlation(correlation_mat)
 		corr_saved_counter = corr_saved_counter + 1
-
 
 		#setting up the global variables for storing last corr and the last std.
 		if corr_saved_counter == sample_size or corr_hit_counter >= reset_calibration_step:
 			corr_mat_dataset = read_csv('corr_data.csv').iloc[-sample_size:,:]
 			reset_correlation(corr_mat_dataset)
 
-
 		broken_corr_mat=[]
 		if i>= sample_size*2:
 			last_corr_mat = read_csv('corr_data.csv').iloc[-1:,:]
 			broken_corr_mat = is_corr_broken(last_corr_mat)
-
-
 
 		corr_action_arr = [0] * no_of_metrics
 
@@ -271,7 +246,6 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 			f.write("1,")
 		else:
 			f.write("0,")
-
 
 		flagged_metrics = ""
 		z = 0
@@ -294,7 +268,6 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		f.write(flagged_metrics+"\n")
 		f.close()
 
-
 		all_events_list = get_events_list(None, True)
 		os.system('lttng disable-event -k ' + all_events_list)
 		events_list = get_events_list(flagged_metrics.split(" | "), False)
@@ -304,7 +277,4 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		time.sleep(4)
 
 
-
 start("/home/ak19qp/Desktop/research/tracing","dump.csv", 24, 500, 24)
-
-
