@@ -46,7 +46,7 @@ def get_events_list(action=None, get_all=False):
 		'net_dev_xmit,net_dev_queue,net_if_receive_skb,net_if_rx,net_napi_gro_frags_entry,net_napi_gro_receive_entry,net_if_receive_skb_entry,net_if_rx_entry,net_if_rx_ni_entry,net_if_receive_skb_list_entry,net_napi_gro_frags_exit,net_napi_gro_receive_exit,net_if_receive_skb_exit,net_if_rx_exit,net_if_rx_ni_exit,net_if_receive_skb_list_exit'
 
 	if get_all:
-		events = cpu_percent + memory_shared + disk_usage_percent
+		events = cpu_events + memory_events + disk_events + network_events
 	else:
 		for x in action:
 			if "cpu" in x:
@@ -64,7 +64,7 @@ def get_events_list(action=None, get_all=False):
 	return events
 
 def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
-
+	global anomalyScore
 	errorUpperBound = 0.03
 	errorLowerBound = 0.03
 	betaVal = 0.5
@@ -91,7 +91,6 @@ def arima(metric_dataset, metric_id, use_sd_or_mean = "sd"):
 	if use_sd_or_mean == "sd":
 		if arima_prediction > (meanOfSample + sdOfSample) or arima_prediction < (meanOfSample - sdOfSample):
 			isAnomaly = 1
-
 	anomalyScore[metric_id] = (betaVal * isAnomaly) + (abs(1 - betaVal) * anomalyScore[metric_id])
 
 	ARIMAtakeAction = 0
@@ -159,7 +158,7 @@ def reset_correlation(corr_mat_dataset):
 
 
 def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibration_step):
-
+	global anomalyScore
 	os.system('lttng create test --output='+trace_file_output)
 	os.system('lttng enable-event -k --syscall --all')
 	os.system('lttng add-context --kernel --type=tid')
@@ -171,6 +170,8 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 	df = read_csv(csv_file)
 
 	metrics_list = df.columns.values.tolist()
+
+	corr_saved_counter = 0
 
 	while i < loop:
 		i += 1
@@ -278,3 +279,4 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 
 
 start("/home/uvm1/Desktop/experiments/tracing","dump.csv", 24, 50, 1000, 25)
+
