@@ -74,14 +74,10 @@ while counter < collect_data:
 	network_dropout = str(network[7])
 
 
-
-
-
 	body = cpu_percent + ", " + cpu_user_time + ", " + cpu_system_time + ", " + cpu_idle_time + ", " + cpu_iowait + ", " + cpu_irq + ", " + cpu_softirq + ", " + cpu_numbers_of_ctx_switches + ", " + cpu_numbers_of_interrupts
 	body = body + ", " + cpu_numbers_of_soft_interrupts + ", " + cpu_load_runable_state + ", " + memory_percent + ", " + memory_active + ", " + memory_buffers + ", " + memory_cached + ", " + memory_shared + ", " + memory_swap_percent + ", " + memory_swap_sin + ", " + memory_swap_sout
 	body = body + ", " + disk_usage_percent + ", " + disk_read_count + ", " + disk_write_count + ", " + disk_read_time + ", " + disk_write_time + ", " + disk_busy_time
 	body = body + ", " + network_bytes_sent + ", " + network_bytes_recv + ", " + network_packets_sent + ", " + network_packets_recv + ", " + network_errin + ", " + network_errout + ", " + network_dropin + ", " + network_dropout +  "\n"
-
 
 	print(str(counter)+":")
 	print(body)
