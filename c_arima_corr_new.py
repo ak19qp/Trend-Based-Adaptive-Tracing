@@ -277,4 +277,4 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		time.sleep(4)
 
 
-start("/home/ak19qp/Desktop/research/tracing","dump.csv", 24, 500, 24)
+start("/home/uvm1/Desktop/experiments/tracing","dump.csv", 24, ,50, 1000, 25)
