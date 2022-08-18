@@ -292,17 +292,17 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		f.close()
 
 
-		print("disabling all kernel syscall events")
+		print("Disabling all kernel syscall events.")
 		#all_events_list = get_events_list(None, True)
 		#os.system('lttng disable-event -k ' + all_events_list)
 		os.system('lttng disable-event -k --syscall --all-events')
 		events_list = get_events_list(flagged_metrics.split(" | "), False)
 
 		if arima_act_taken_for_save == 1 and corr_act_taken_for_save == 1:
-			print("enabling flagged events")
+			print("Enabling flagged events.")
 			os.system('lttng enable-event -k ' + events_list)
 		else:
-			print("no flagged events")
+			print("No flagged metrics, no events to enable.")
 
 
 		print("rotate")
