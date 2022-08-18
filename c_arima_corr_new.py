@@ -214,7 +214,7 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 				f.close()
 
 				f = open("result_summary.csv", "w")
-				f.write("arima_flag,correlation_flag,both_flag,flagged_metrics\n")
+				f.write("arima_flag,correlation_flag,both_flag,flagged_metrics_id,flagged_metrics\n")
 				f.close()
 
 				z = z + 1
@@ -268,6 +268,7 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 			f.write("0,")
 
 		flagged_metrics = ""
+		flagged_metrics_id = ""
 		z = 0
 		while z < no_of_metrics:
 			if corr_action_arr[z] == 1:
@@ -276,6 +277,7 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 					fs.write("1,1\n")
 					fs.close()
 					flagged_metrics = flagged_metrics + metrics_list[z] + " | "
+					flagged_metrics_id = flagged_metrics_id + str(z) + " | "
 				else:
 					fs = open("results_of_metric-"+str(z)+".csv", "a")
 					fs.write("1,0\n")
@@ -285,7 +287,7 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 				fs.write("0,0\n")
 				fs.close()
 			z = z + 1
-
+		f.write(flagged_metrics_id+",")
 		f.write(flagged_metrics+"\n")
 		f.close()
 
