@@ -166,9 +166,9 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 	global corr_hit_counter
 
 	os.system('lttng create test --output='+trace_file_output)
-	os.system('lttng enable-event -k --syscall --all')
-	os.system('lttng add-context --kernel --type=tid')
+	#os.system('lttng enable-event -k --syscall --all')
 	os.system('lttng enable-event -k irq_softirq_entry,irq_softirq_raise,irq_softirq_exit,irq_handler_entry,irq_handler_exit,lttng_statedump_process_state,lttng_statedump_start,lttng_statedump_end,lttng_statedump_network_interface,lttng_statedump_block_device,block_rq_complete,block_rq_insert,block_rq_issue,block_bio_frontmerge,sched_migrate,sched_migrate_task,power_cpu_frequency,net_dev_queue,netif_receive_skb,net_if_receive_skb,timer_hrtimer_start,timer_hrtimer_cancel,timer_hrtimer_expire_entry,timer_hrtimer_expire_exit')
+	os.system('lttng add-context --kernel --type=tid')
 	os.system('lttng start')
 
 	i = 0
@@ -292,9 +292,10 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		f.close()
 
 
-		print("disabling all events")
-		all_events_list = get_events_list(None, True)
-		os.system('lttng disable-event -k ' + all_events_list)
+		print("disabling all kernel syscall events")
+		#all_events_list = get_events_list(None, True)
+		#os.system('lttng disable-event -k ' + all_events_list)
+		os.system('lttng disable-event -k --syscall --all-events')
 		events_list = get_events_list(flagged_metrics.split(" | "), False)
 		print("enabling flagged events")
 		os.system('lttng enable-event -k ' + events_list)
@@ -304,5 +305,4 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		time.sleep(4)
 
 
-start("/home/uvm1/Desktop/experiments/tracing","dump.csv", 24, 50, 1000, 25)
-
+start("/home/a/Desktop/experiments/tracing","dump.csv", 24, 50, 1000, 25)
