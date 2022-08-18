@@ -297,8 +297,14 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		#os.system('lttng disable-event -k ' + all_events_list)
 		os.system('lttng disable-event -k --syscall --all-events')
 		events_list = get_events_list(flagged_metrics.split(" | "), False)
-		print("enabling flagged events")
-		os.system('lttng enable-event -k ' + events_list)
+
+		if arima_act_taken_for_save == 1 and corr_act_taken_for_save == 1:
+			print("enabling flagged events")
+			os.system('lttng enable-event -k ' + events_list)
+		else:
+			print("no flagged events")
+
+
 		print("rotate")
 		os.system('lttng rotate')
 
@@ -306,3 +312,4 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 
 
 start("/home/a/Desktop/experiments/tracing","dump.csv", 24, 50, 1000, 25)
+
