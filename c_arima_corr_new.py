@@ -305,7 +305,7 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 			print("No flagged metrics, no events to enable.")
 
 
-		print("rotate")
+		print("Rotate")
 		os.system('lttng rotate')
 
 		time.sleep(4)
