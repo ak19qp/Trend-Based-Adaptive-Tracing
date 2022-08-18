@@ -33,7 +33,11 @@ anomalyScore = []
 metrics_list = ["cpu_percent","cpu_user_time","cpu_system_time","cpu_idle_time","cpu_iowait","cpu_irq","cpu_softirq","cpu_numbers_of_ctx_switches","cpu_numbers_of_interrupts","cpu_numbers_of_soft_interrupts","cpu_load_runable_state","memory_percent","memory_active","memory_buffers","memory_cached","memory_shared","memory_swap_percent","memory_swap_sin","memory_swap_sout","disk_usage_percent","disk_read_count","disk_write_count","disk_read_time","disk_write_time","disk_busy_time","network_bytes_sent","network_bytes_recv","network_packets_sent","network_packets_recv","network_errin","network_errout","network_dropin","network_dropout"]
 
 
+
+
+
 def get_events_list(action=None, get_all=False):
+
 	events = ''
 
 	cpu_events = \
@@ -159,6 +163,8 @@ def reset_correlation(corr_mat_dataset):
 
 def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibration_step):
 	global anomalyScore
+	global corr_hit_counter
+
 	os.system('lttng create test --output='+trace_file_output)
 	os.system('lttng enable-event -k --syscall --all')
 	os.system('lttng add-context --kernel --type=tid')
@@ -166,15 +172,15 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 	os.system('lttng start')
 
 	i = 0
-
-	df = read_csv(csv_file)
-
-	metrics_list = df.columns.values.tolist()
-
 	corr_saved_counter = 0
 
 	while i < loop:
 		i += 1
+
+		df = read_csv(csv_file)
+
+		metrics_list = df.columns.values.tolist()
+
 		pct_progress = (i/loop) * 100
 		pct_progress = round(pct_progress, 2)
 		print("Progress: "+str(pct_progress)+"%\n")
@@ -192,8 +198,11 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 		arima_action_taken = [0] * no_of_metrics
 
 		if i == 1:
+
 			anomalyScore = [0] * no_of_metrics
+
 			z = 0
+
 			while z < no_of_metrics:
 				f = open("results_of_metric-"+str(z)+".csv", "w")
 				write_str = "predicted,actual,mean_of_sample,sd_of_sample,meanAndPredictionDifferencePercentage,betaVal,ARIMAflagged,anomalyScore,sampling_Freq,ARIMAtakeAction,CorrelationBroken,ActionTaken(Both)\n"
@@ -243,6 +252,16 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 
 		f = open("result_summary.csv", "a")
 
+		if arima_act_taken_for_save == 1:
+			f.write("1,")
+		else:
+			f.write("0,")
+
+		if corr_act_taken_for_save == 1:
+			f.write("1,")
+		else:
+			f.write("0,")
+
 		if arima_act_taken_for_save == 1 and corr_act_taken_for_save == 1:
 			f.write("1,")
 		else:
@@ -266,13 +285,18 @@ def start(trace_file_output, csv_file, sample_size, start_at, loop, reset_calibr
 				fs.write("0,0\n")
 				fs.close()
 			z = z + 1
+
 		f.write(flagged_metrics+"\n")
 		f.close()
 
+
+		print("disabling all events")
 		all_events_list = get_events_list(None, True)
 		os.system('lttng disable-event -k ' + all_events_list)
 		events_list = get_events_list(flagged_metrics.split(" | "), False)
+		print("enabling flagged events")
 		os.system('lttng enable-event -k ' + events_list)
+		print("rotate")
 		os.system('lttng rotate')
 
 		time.sleep(4)
