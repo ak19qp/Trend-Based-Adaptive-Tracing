@@ -4,7 +4,7 @@ from pandas import read_csv
 
 pandas.set_option('display.max_rows', None)
 
-os.system("perf stat -e 'syscalls:sys_enter_*' -a sleep 2 2>&1 | awk '$1 != 0' > perf.txt")
+os.system("perf stat -e 'syscalls:sys_enter_*' -a sleep 10 2>&1 | awk '$1 != 0' > perf.txt")
 
 
 
