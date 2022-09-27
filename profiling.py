@@ -7,11 +7,7 @@ pandas.set_option('display.max_rows', None)
 os.system("perf stat -e 'syscalls:sys_enter_*' -a sleep 10 2>&1 | awk '$1 != 0' > perf.txt")
 
 
-
-
 dfsyscallmap = read_csv("syscallmap.csv")
-
-
 
 
 f = open("perf.txt", "r")
@@ -31,8 +27,6 @@ f.close()
 for n in temp[3:-3]:
   sp = n.split()
   new_temp.append(sp[0].replace(',', '')+","+sp[1][19:])
-
-
 
 
 f = open("new.txt", "w")
@@ -60,25 +54,18 @@ print("----------------------------------------------\n")
 
 
 
-kernelprofiling = []
+kernelprofiler = []
 
 
 for i in range(len(df.index)):
   syscalled = df.loc[i]["Syscall"]
   find = dfsyscallmap.loc[dfsyscallmap['Syscall'] == syscalled]
-  if find.empty == 0:
-    kernelprofiling.append(find.iloc[0,1])
+  if find.empty == 0 and find.iloc[0,1] not in kernelprofiler:
+    kernelprofiler.append(find.iloc[0,1])
 
 
 
 print("Kernel components accessed sorted by priority:")
 print("----------------------------------------------")
-for k in kernelprofiling:
+for k in kernelprofiler:
   print(k)
-
-
-
-
-
-
-
