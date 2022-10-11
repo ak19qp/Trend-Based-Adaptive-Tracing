@@ -11,5 +11,5 @@ for i in range(sample_collection):
 
 
 for i in range(sample_collection):
-	os.system('sudo perf report -i perf'+str(i)+'.data --stdio -q > perf'+str(i)+'.txt')
+	os.system('sudo perf report -i perf'+str(i)+'.data --stdio -g folded -q > perf'+str(i)+'.txt')
 	os.system('sudo chmod 777 perf'+str(i)+'.txt')
