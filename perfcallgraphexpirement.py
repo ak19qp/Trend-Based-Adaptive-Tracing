@@ -48,13 +48,12 @@ class LinkedList:
 
 
 
-
-samples = 4
+samples = 5
 array=[]
 last_parrent_index = 0
 
 for count in range(samples):
-    with open('perf'+str(samples)+'.txt') as f:
+    with open('perf'+str(count)+'.txt') as f:
         while True:
 
             line = f.readline().strip()
@@ -121,5 +120,6 @@ for count in range(samples):
            
             
 for k in array:
+    print(str(k.head.headcounter))
     k.printList()
     print("\n")
