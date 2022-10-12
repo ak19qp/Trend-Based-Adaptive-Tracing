@@ -48,70 +48,74 @@ class LinkedList:
 
 
 
+
+samples = 4
 array=[]
 last_parrent_index = 0
-with open('perf0.txt') as f:
-    while True:
 
-        line = f.readline().strip()
-        if not line:
-            break
-        
+for count in range(samples):
+    with open('perf'+str(samples)+'.txt') as f:
+        while True:
 
-        if line != None:
-            if "[.]" in line:
-                parent = line.split("%  ")[2].split(" ",1)[0]
-                child = line.split("[.] ",1)[1]
+            line = f.readline().strip()
+            if not line:
+                break
+            
 
-                #check if parent already exist
-                found = False
-                counter = -1
-                for k in array:
-                    counter = counter + 1
-                    if k.getData() == parent:
-                        k.head.headcounter = k.head.headcounter + 1
-                        last_parrent_index = counter
-                        found = True
-                        break
-                if not found:
-                    llist = LinkedList()
-                    llist.head = Node(parent)
-                    llist.head.next = Node(child)
-                    array.append(llist)
-                    last_parrent_index = len(array) - 1
+            if line != None:
+                if "[.]" in line:
+                    parent = line.split("%  ")[2].split(" ",1)[0]
+                    child = line.split("[.] ",1)[1]
 
-            elif "[k]" in line:
-                parent = line.split("%  ")[2].split(" ",1)[0]
-                child = line.split("[k] ",1)[1]
+                    #check if parent already exist
+                    found = False
+                    counter = -1
+                    for k in array:
+                        counter = counter + 1
+                        if k.getData() == parent:
+                            k.head.headcounter = k.head.headcounter + 1
+                            last_parrent_index = counter
+                            found = True
+                            break
+                    if not found:
+                        llist = LinkedList()
+                        llist.head = Node(parent)
+                        llist.head.next = Node(child)
+                        array.append(llist)
+                        last_parrent_index = len(array) - 1
 
-                #check if parent already exist
-                found = False
-                counter = -1
-                for k in array:
-                    counter = counter + 1
-                    if k.getData() == parent:
-                        k.head.headcounter = k.head.headcounter + 1
-                        last_parrent_index = counter
-                        found = True
-                        break
+                elif "[k]" in line:
+                    parent = line.split("%  ")[2].split(" ",1)[0]
+                    child = line.split("[k] ",1)[1]
 
-                if not found:
-                    llist = LinkedList()
-                    llist.head = Node(parent)
-                    llist.head.next = Node(child)
-                    array.append(llist)
-                    last_parrent_index = len(array) - 1
+                    #check if parent already exist
+                    found = False
+                    counter = -1
+                    for k in array:
+                        counter = counter + 1
+                        if k.getData() == parent:
+                            k.head.headcounter = k.head.headcounter + 1
+                            last_parrent_index = counter
+                            found = True
+                            break
 
-            else:
-                children = line.split("% ",1)[1].split(";") 
-                temp = array[last_parrent_index].getLast()
+                    if not found:
+                        llist = LinkedList()
+                        llist.head = Node(parent)
+                        llist.head.next = Node(child)
+                        array.append(llist)
+                        last_parrent_index = len(array) - 1
 
-                for k in children:
-                    if array[-1].searchValue(k):
-                        continue
-                    child = Node(k)
-                    temp.next = child
-                    temp = child
+                else:
+                    children = line.split("% ",1)[1].split(";") 
+                    temp = array[last_parrent_index].getLast()
+
+                    for k in children:
+                        if array[last_parrent_index].searchValue(k):
+                            continue
+                        child = Node(k)
+                        temp.next = child
+                        temp = child
 
         
            
