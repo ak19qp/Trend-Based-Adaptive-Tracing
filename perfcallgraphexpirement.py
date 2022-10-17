@@ -5,6 +5,7 @@ class Node:
         self.data = data  # Assign data
         self.next = None  # Initialize next as null
         self.headcounter = 0
+        self.last_head_index = -1
   
   
 # Linked List class contains a Node object
@@ -49,8 +50,16 @@ class LinkedList:
 
 
 samples = 5
+sub_samples = 2
 array=[]
 last_parrent_index = 0
+
+
+while True:
+    if samples % sub_samples > 0:
+        samples = samples - 1
+        break
+
 
 for count in range(samples):
     with open('perf'+str(count)+'.txt') as f:
@@ -63,7 +72,7 @@ for count in range(samples):
 
             if line != None:
                 if "[.]" in line:
-                    parent = line.split("%  ")[2].split(" ",1)[0]
+                    parent = " ".join(line.split("%  ")[2].split(" ")[1:]).strip().split(" ")[0]
                     child = line.split("[.] ",1)[1]
 
                     #check if parent already exist
@@ -72,7 +81,9 @@ for count in range(samples):
                     for k in array:
                         counter = counter + 1
                         if k.getData() == parent:
-                            k.head.headcounter = k.head.headcounter + 1
+                            if k.head.last_head_index != count:
+                                k.head.headcounter = k.head.headcounter + 1
+                                k.head.last_head_index = count
                             last_parrent_index = counter
                             found = True
                             break
@@ -84,7 +95,7 @@ for count in range(samples):
                         last_parrent_index = len(array) - 1
 
                 elif "[k]" in line:
-                    parent = line.split("%  ")[2].split(" ",1)[0]
+                    parent = " ".join(line.split("%  ")[2].split(" ")[1:]).strip().split(" ")[0]
                     child = line.split("[k] ",1)[1]
 
                     #check if parent already exist
@@ -93,7 +104,9 @@ for count in range(samples):
                     for k in array:
                         counter = counter + 1
                         if k.getData() == parent:
-                            k.head.headcounter = k.head.headcounter + 1
+                            if k.head.last_head_index != count:
+                                k.head.headcounter = k.head.headcounter + 1
+                                k.head.last_head_index = count
                             last_parrent_index = counter
                             found = True
                             break
@@ -106,7 +119,7 @@ for count in range(samples):
                         last_parrent_index = len(array) - 1
 
                 else:
-                    children = line.split("% ",1)[1].split(";") 
+                    children = line.split("% ",1)[1].split(";")
                     temp = array[last_parrent_index].getLast()
 
                     for k in children:
