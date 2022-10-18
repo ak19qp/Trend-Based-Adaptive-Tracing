@@ -50,7 +50,6 @@ class LinkedList:
 
 
 
-
 samples = 5
 sub_samples = 1
 array=[]
