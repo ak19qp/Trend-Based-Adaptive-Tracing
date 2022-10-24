@@ -72,7 +72,7 @@ for count in range(samples):
                 break
             
 
-            if line != None:
+            if line != None or line != "":
 
                 if "[.]" in line:
                     parent = " ".join(line.split("%  ")[2].split(" ")[1:]).strip().split(" ")[0]
