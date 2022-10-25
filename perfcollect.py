@@ -18,7 +18,7 @@ for i in range(sample_collection):
 	os.system('sudo perf report -i perfdata/perf'+str(i)+'.data --stdio -q -g folded > perfdata/perf'+str(i)+'.txt')
 	os.system('sudo chmod 777 perfdata/perf'+str(i)+'.txt')
 	os.system('sudo rm perfdata/perf'+str(i)+'.data')
-	print(str(100*i/(sample_collection-1))+"% done")
+	print(str(int(100*i/(sample_collection-1)))+"% done")
 
 print("All complete!")
 
