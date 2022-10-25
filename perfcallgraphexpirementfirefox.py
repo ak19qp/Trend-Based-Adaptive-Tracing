@@ -51,8 +51,8 @@ class LinkedList:
 
 
 
-samples = 1
-sub_samples = 1
+samples = 100
+sub_samples = 10
 array=[]
 last_parrent_index = 0
 current_count = -1
@@ -65,6 +65,7 @@ while True:
 
 
 for count in range(samples):
+    print(str(int(100*count/(samples-1)))+"% done")
     
     with open('perf'+str(count)+'.txt') as f:
         while True:
@@ -141,3 +142,5 @@ for k in array:
     print("\n")
 
 f.close()
+
+print("All complete!")
