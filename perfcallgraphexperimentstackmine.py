@@ -49,7 +49,7 @@ class LinkedList:
 
 
 
-samples = 1
+samples = 100
 array=[]
 last_parrent_index = 0
 current_count = -1
@@ -108,7 +108,7 @@ for count in range(samples):
                         parent = array[last_parrent_index].getData()
 
                         for i in children:
-                            connection = parent + "---" + i
+                            connection = parent + "-----" + i
                             if connection in connections:
                                 connections[connection] += 1
                             else:
@@ -172,7 +172,7 @@ connections = sorted(connections.items(), key=lambda x: x[1], reverse=True)
 
 f = open("output2.txt", "w")
 for item in connections:
-    f.write(item+"\n")
+    f.write(str(item)+"\n")
     print(item) # gives a tuple
 
 f.close()
