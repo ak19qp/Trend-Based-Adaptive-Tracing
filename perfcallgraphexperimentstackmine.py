@@ -224,17 +224,15 @@ while len(sortedarray)>0:
 
 f = open("output1.txt", "w")
 
-for k in sortedarrayfinal:
-    print(str(k.head.time_counter))
+for k in range(len(sortedarraydata)):
 
-    f.write(str(k.head.time_counter)+"\n")
+    print(str(sortedarraydata[k]))
 
-    k.printList()
+    f.write(str(sortedarraydata[k])+"\n")
 
-    temp = k.head
-    while (temp):
-        f.write(temp.data+"\n")
-        temp = temp.next
+    print(sortedarrayheadding[k])
+
+    f.write(sortedarrayheadding[k]+"\n")
 
     f.write("\n")
     print("\n")
@@ -263,7 +261,7 @@ print("Output2 generated!")
 f = open("output3.csv", "w")
 stringbuilder = ""
 for k in sortedarrayheadding:
-    stringbuilder = stringbuilder + k + ","
+    stringbuilder = stringbuilder + '"' + k + '",'
 stringbuilder = stringbuilder + "\n"
 
 
