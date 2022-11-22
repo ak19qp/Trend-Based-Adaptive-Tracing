@@ -51,9 +51,9 @@ class LinkedList:
 
 
 
-
-samples = 200
-rank_cut_off_number = 70 #num of methods to follow
+ignore_kernel_parents = False
+samples = 100
+rank_cut_off_number = 2000 #num of methods to follow
 array=[]
 last_parrent_index = 0
 current_count = -1
@@ -62,6 +62,12 @@ connections = {}
 
 ignore_next_child = False
 
+
+kernel_exclusion_string = "[k]"
+if ignore_kernel_parents:
+    kernel_exclusion_string = ""
+
+                    
 for count in range(samples):
 
     print("\nProgress: " + str(int(100*count/samples)) + "%  |  Loop: " + str(count) + "/" + str(samples) + "\n")
@@ -78,7 +84,7 @@ for count in range(samples):
             if line != None and line != "":
 
 
-                if line.count('%') > 1 and '[k]' not in line:
+                if line.count('%') > 1 and kernel_exclusion_string not in line:
 
                     ignore_next_child = False
                     #if "libxul.so" in line or "libc-2.31.so " in line:
@@ -111,7 +117,7 @@ for count in range(samples):
                         last_parrent_index = len(array) - 1
 
 
-                elif "[k]" in line:
+                elif kernel_exclusion_string in line:
                     ignore_next_child = True
 
                 else:
@@ -166,7 +172,7 @@ for count in range(samples):
            
 
 
-
+connections = sorted(connections.items(), key=lambda x: x[1], reverse=True)
 
 
 sortedarray = []
@@ -220,8 +226,6 @@ while len(sortedarray)>0:
 
 
 
-
-
 f = open("output1.txt", "w")
 
 for k in range(len(sortedarraydata)):
@@ -242,7 +246,7 @@ f.close()
 print("Output1 generated!")
 
 
-connections = sorted(connections.items(), key=lambda x: x[1], reverse=True)
+
 
 
 
